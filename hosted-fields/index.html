@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <h1 id="header">Web SDK Example (Hosted Fields)</h1>
+
+  <form action="/" id="tokenize-form" method="post">
+    <label for="account-number">Account Number</label>
+    <div id="account-number" class="hosted-field-container"></div>
+
+    <label for="cvv">CVV</label>
+    <div id="cvv" class="hosted-field-container"></div>
+
+    <label for="exp-date">Expiration Date</label>
+    <div id="exp-date" class="hosted-field-container"></div>
+
+    <input id="tokenize-button" type="submit" value="Tokenize" disabled />
+  </form>
+
+  <label for="output" id="output-label">OUTPUT:</label>
+  <pre id="output"></pre>
+
+  <script src="https://web-sdk.seamlesspay.com/latest/js/client.min.js"></script>
+  <script src="https://web-sdk.seamlesspay.com/latest/js/hosted-fields.min.js"></script>
+  <script src="index.js"></script>
+</body>
+
+</html>
