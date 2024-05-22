@@ -49,22 +49,26 @@ seamlesspay.client.create({
     debug('hostedFields:', hostedFields)
     displayOutput(`Hosted Fields initialized.`)
 
-    const paymentData = {
-      billingAddress: {
-        line1: '400 Madison Ave',
-        line2: '10th Fl',
-        city: 'New York',
-        country: 'USA',
-        state: 'NY'
-      },
-      name: 'Michael Smith'
-    };
-
-    hostedFields.addSubmitHandler(submitHandler, paymentData);
+    hostedFields.addSubmitHandler(submitHandler);
+    hostedFields.addResponseHandler(responseHandler);
   })
 })
 
-function submitHandler(error, payload) {
+function submitHandler(hostedFields) {
+  const paymentData = {
+    billingAddress: {
+      line1: '400 Madison Ave',
+      line2: '10th Fl',
+      city: 'New York',
+      country: 'USA',
+      state: 'NY'
+    },
+    name: 'Michael Smith'
+  };
+  hostedFields.setAdditionalRequestData(paymentData);
+}
+
+function responseHandler(error, payload) {
   if (error) {
     debug('[tokenize]', error)
     displayError(error)
