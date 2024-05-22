@@ -4,8 +4,6 @@ const debug = (...output) => DEBUG && console.log('[DEBUG]', ...output)
 const displayOutput = (...output) => document.querySelector('#output').innerHTML += `${output.join(' ')}</br>`
 const displayError = (error) => displayOutput(`<em>${error.code}: ${error.message}</em>`)
 
-const tokenizeButton = document.getElementById('tokenize-button');
-
 seamlesspay.client.create({
   environment: 'sandbox',
   authorization: 'pk_FFFFFFFFFFFFFFFFFFFFFFFFFF'
@@ -29,12 +27,19 @@ seamlesspay.client.create({
       '.valid': {
         color: 'green'
       },
+      '.invalid': {
+        color: 'blue'
+      },
+      '.potentiallyValid': {
+        color: 'orange'
+      },
     },
     fields: {
       accountNumber: { selector: '#account-number' },
       cvv: {selector: '#cvv' },
       expDate: { selector: '#exp-date' },
     },
+    submitButton: { selector: '#submit-button' }
   }, (error, hostedFields) => {
     if (error) {
       debug('[hostedFields.create]', error)
@@ -44,21 +49,31 @@ seamlesspay.client.create({
     debug('hostedFields:', hostedFields)
     displayOutput(`Hosted Fields initialized.`)
 
-    tokenizeButton.addEventListener('click', submitHandler.bind(null, hostedFields))
-    tokenizeButton.removeAttribute('disabled')
+    hostedFields.addSubmitHandler(submitHandler);
+    hostedFields.addResponseHandler(responseHandler);
   })
 })
 
-function submitHandler(hostedFields, event) {
-  displayOutput('Sending tokenize request...')
-  event.preventDefault()
-  hostedFields.tokenize((error, payload) => {
-    if (error) {
-      debug('[tokenize]', error)
-      displayError(error)
-      return
-    }
-    debug('tokenize response payload:', payload)
-    displayOutput('Token:', payload.token)
-  })
+function submitHandler(hostedFields) {
+  const paymentData = {
+    billingAddress: {
+      line1: '400 Madison Ave',
+      line2: '10th Fl',
+      city: 'New York',
+      country: 'USA',
+      state: 'NY'
+    },
+    name: 'Michael Smith'
+  };
+  hostedFields.setAdditionalRequestData(paymentData);
+}
+
+function responseHandler(error, payload) {
+  if (error) {
+    debug('[tokenize]', error)
+    displayError(error)
+    return
+  }
+  debug('tokenize response payload:', payload)
+  displayOutput('Token:', payload.token)
 }
