@@ -1,0 +1,10 @@
+http://{$PUBLIC_HOST}, http://localhost, http://127.0.0.1 {
+	root * /examples
+	header >Cache-Control "no-cache, no-store"
+	log {
+		format json
+	}
+	file_server {
+		browse
+	}
+}
