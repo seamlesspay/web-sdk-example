@@ -1,0 +1,30 @@
+services:
+  tunnel:
+    image: cloudflare/cloudflared
+    restart: unless-stopped
+    command: tunnel --no-autoupdate --loglevel debug run
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
+
+  web-sdk-examples:
+    image: caddy:latest
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "${LOCAL_PORT:-80}:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./examples:/examples:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    environment:
+      - PUBLIC_HOST=${PUBLIC_HOST:-web-sdk-examples.seamlesspay.dev}
+
+volumes:
+  caddy_data:
+  caddy_config:
+
+networks:
+  default:
+    name: web-sdk-example
