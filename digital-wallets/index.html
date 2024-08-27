@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <h1 id="header">Web SDK Example (Digital Wallets)</h1>
+
+  <form action="/" id="my-sample-form" method="post">
+    <label for="amount">Amount</label>
+    <input id="amount" type="text">
+
+    <div id="payment-button-container"></div>
+  </form>
+
+  <label for="output" id="output-label">OUTPUT:</label>
+  <pre id="output"></pre>
+
+  <script src="https://web-sdk.seamlesspay.com/latest/js/client.min.js"></script>
+  <script src="https://web-sdk.seamlesspay.com/latest/js/digital-wallets.min.js"></script>
+  <script src="index.js"></script>
+</body>
+
+</html>
