@@ -1,4 +1,8 @@
 http://{$PUBLIC_HOST}, http://localhost, http://127.0.0.1 {
+  handle_path /digital-wallets/* {
+    reverse_proxy digital-wallets:9797
+  }
+
 	root * /examples
 	header >Cache-Control "no-cache, no-store"
 	log {

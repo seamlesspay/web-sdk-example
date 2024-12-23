@@ -6,8 +6,15 @@ const displayError = (error) => displayOutput(`<em>${error.code}: ${error.messag
 
 seamlesspay.client.create(
   {
-    environment: 'sandbox',
-    authorization: 'pk_FFFFFFFFFFFFFFFFFFFFFFFFFF',
+    authorization: '{{access_token}}',
+    {{#if use_urls }}
+    environment: {
+      mainApi: '{{main_api}}',
+      tokenizerApi: '{{tokenizer_api}}',
+    },
+    {{else}}
+    environment: '{{environment}}',
+    {{/if}}
   },
   (error, client) => {
     if (error) {

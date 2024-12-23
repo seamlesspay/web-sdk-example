@@ -1,0 +1,18 @@
+sdk_version = "latest"
+
+secret_key = ""
+environment = "" # sandbox, live, production
+# api_url = ""
+# tokenizer_url = ""
+
+# Modify at your own risk
+[environments]
+
+[environments.live]
+api_url = "https://api.seamlesspay.com"
+
+[environments.production]
+api_url = "https://api.seamlesspay.com"
+
+[environments.sandbox]
+api_url = "https://api.sandbox.seamlesspay.com"

@@ -6,11 +6,21 @@ Basic examples of using the SeamlessPay Web SDK to perform tokenization.
 
 ### 1. Configure the client
 
-Update the SeamlessPay client config in respective examples' `index.js` with the appropriate `environment` and `authorization` values for your testing purposes.
+#### Hosted fields
+
+Update the SeamlessPay client config in `index.js` with the appropriate `environment` and `authorization` values for your testing purposes.
+
+#### Digital wallets
+
+- Copy `dw-config.toml.example` to `dw-config.toml`
+- Fill `secret_key` value
+- Fill `environment` value
 
 ### 2. Configure the target SDK
 
 Update script sources in `index.html` to use the correct URL for the desired SDK version. The default is `https://web-sdk.seamlesspay.com/latest`.
+
+_NOTE: Digital Wallets SDK is not intended for modification for now. If you feel adventurous, look for html template in `src/main.rs`_
 
 ### 3. Spin up docker compose
 
@@ -45,7 +55,7 @@ Set tunnel `Service` fields to:
 ##### Spinning things up
 
 ```sh
-docker compose up web-sdk-examples
+docker compose up
 ```
 
 The examples are then available both locally and via tunnel's external hostname.

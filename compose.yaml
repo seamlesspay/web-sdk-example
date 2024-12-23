@@ -21,6 +21,16 @@ services:
     environment:
       - PUBLIC_HOST=${PUBLIC_HOST:-web-sdk-examples.seamlesspay.dev}
 
+  digital-wallets:
+    image: seamlesspay/digital-wallets-example
+    build:
+      context: .
+      dockerfile: digital-wallets.Dockerfile
+    pull_policy: build
+    restart: unless-stopped
+    volumes:
+      - ./examples/digital-wallets/dw-config.toml:/dw/dw-config.toml:ro
+
 volumes:
   caddy_data:
   caddy_config:
