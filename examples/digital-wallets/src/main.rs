@@ -184,8 +184,8 @@ fn indexjs() -> Result<Template, Status> {
     let maybe_body = ureq::post(access_tokens_url)
         .set("Authorization", &format!("Bearer {}", config.secret_key))
         .send_json(ureq::json!({
-            "type": "one_time_password",
-            "scope": "init_sdk",
+            "type": "limited_scope",
+            "scope": "web-sdk",
         }));
     let body = match maybe_body {
         Ok(res) => match res.into_json::<AccessTokenResponse>(){
