@@ -1,5 +1,4 @@
 sdk_version = "latest"
-sdk_host = "https://web-sdk.seamlesspay.com"
 
 secret_key = ""
 environment = "" # sandbox, live, production

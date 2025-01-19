@@ -1,8 +1,6 @@
-use indoc::indoc;
-use std::{error::Error, fmt};
-use rocket::response::content;
 use rocket::http::Status;
-use rocket_dyn_templates::{Template, context};
+use rocket_dyn_templates::{context, Template};
+use std::{error::Error, fmt};
 
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -11,6 +9,7 @@ use std::fs;
 #[derive(Debug, Deserialize, Serialize)]
 struct Config {
     sdk_version: String,
+    #[serde(default = "default_sdk_host")]
     sdk_host: String,
     secret_key: String,
     environment: String,
@@ -36,6 +35,10 @@ fn empty_string() -> String {
     "".to_string()
 }
 
+fn default_sdk_host() -> String {
+    "https://web-sdk.seamlesspay.com".to_string()
+}
+
 #[macro_use]
 extern crate rocket;
 
@@ -59,14 +62,18 @@ fn get_config() -> Result<Config, ConfigFetchError> {
         Ok(c) => c,
         Err(err) => {
             eprintln!("Could not read file `{}`: {}", filename, err);
-            return Err(ConfigFetchError{ wrapped: format!("{err}") })
+            return Err(ConfigFetchError {
+                wrapped: format!("{err}"),
+            });
         }
     };
     let config: Config = match toml::from_str(&contents) {
         Ok(d) => d,
         Err(err) => {
             eprintln!("Unable to load data from `{}`: {}", filename, err);
-            return Err(ConfigFetchError{ wrapped: format!("{err}") })
+            return Err(ConfigFetchError {
+                wrapped: format!("{err}"),
+            });
         }
     };
 
@@ -74,101 +81,34 @@ fn get_config() -> Result<Config, ConfigFetchError> {
 }
 
 #[get("/")]
-fn index() -> Result<content::RawHtml<String>, Status> {
+fn index() -> Result<Template, Status> {
     let config: Config = match get_config() {
         Ok(d) => d,
         Err(err) => {
             eprintln!("Unable to load config: {}", err);
-            return Err(Status::InternalServerError)
+            return Err(Status::InternalServerError);
         }
     };
 
-    let formatted = format!(
-        r#"
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-<meta charset="UTF-8">
-<link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-<h1 id="header">Web SDK Example (Digital Wallets)</h1>
-
-<form action="/" id="my-sample-form" method="post">
-    <label for="amount">Amount</label>
-    <input id="amount" type="text">
-
-    <div id="payment-button-container"></div>
-</form>
-
-<label for="output" id="output-label">OUTPUT:</label>
-<pre id="output"></pre>
-
-<script src="{}/{}/js/client.min.js"></script>
-<script src="{}/{}/js/digital-wallets.min.js"></script>
-<script src="index.js"></script>
-</body>
-
-</html>"#, config.sdk_host, config.sdk_version, config.sdk_host, config.sdk_version
-    );
-
-    Ok(rocket::response::content::RawHtml(formatted))
+    Ok(Template::render("index", context! {
+        sdk_host: config.sdk_host,
+        sdk_version: config.sdk_version,
+    }))
 }
 
 #[get("/style.css")]
-fn stylecss() -> content::RawCss<&'static str> {
-    rocket::response::content::RawCss(indoc! {r#"
-        body {
-          background-color: #FFFFFF;
-          color: #333333;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-        }
-
-        #output-label {
-          margin: 60px 0 0 0;
-          padding: 0;
-          font-weight: bold;
-          font-size: 10pt;
-        }
-
-        #output {
-          margin: 0;
-          padding: 10px;
-          background-color: #000000;
-          color: #FFFFFF;
-          font-family: monospace;
-        }
-
-        #output em {
-          color: #ff4848;
-          font-style: normal;
-        }
-
-        label {
-          display: block;
-          margin: 10px 0 5px 0;
-        }
-
-        input {
-          margin: 20px 0 20px 0;
-          padding: 10px 20px;
-          border: none;
-          background-color: #006633;
-          color: #FFFFFF;
-          cursor: pointer;
-        }
-    "#})
+fn stylecss() -> Result<Template, Status> {
+    let ctx = context! {};
+    Ok(Template::render("css/style", &ctx))
 }
 
-#[get("/index.js")]
-fn indexjs() -> Result<Template, Status> {
+#[get("/app.js")]
+fn appjs() -> Result<Template, Status> {
     let config: Config = match get_config() {
         Ok(d) => d,
         Err(err) => {
             eprintln!("Unable to load config: {}", err);
-            return Err(Status::InternalServerError)
+            return Err(Status::InternalServerError);
         }
     };
 
@@ -177,7 +117,7 @@ fn indexjs() -> Result<Template, Status> {
     } else {
         match config.environments.get(&config.environment) {
             Some(env) => &env.api_url,
-            None => ""
+            None => "",
         }
     };
     let access_tokens_url = &format!("{}/access-tokens", api_url);
@@ -189,16 +129,22 @@ fn indexjs() -> Result<Template, Status> {
             "scope": "web-sdk",
         }));
     let body = match maybe_body {
-        Ok(res) => match res.into_json::<AccessTokenResponse>(){
+        Ok(res) => match res.into_json::<AccessTokenResponse>() {
             Ok(atres) => atres,
             Err(err) => {
-                eprintln!("Could not fetch access token from `{}`: {}", access_tokens_url, err);
-                return Err(Status::InternalServerError)
+                eprintln!(
+                    "Could not fetch access token from `{}`: {}",
+                    access_tokens_url, err
+                );
+                return Err(Status::InternalServerError);
             }
         },
         Err(err) => {
-            eprintln!("Could not fetch access token from `{}`: {}", access_tokens_url, err);
-            return Err(Status::InternalServerError)
+            eprintln!(
+                "Could not fetch access token from `{}`: {}",
+                access_tokens_url, err
+            );
+            return Err(Status::InternalServerError);
         }
     };
 
@@ -210,7 +156,7 @@ fn indexjs() -> Result<Template, Status> {
         tokenizer_api: config.tokenizer_url
     };
 
-    Ok(Template::render("index", &ctx))
+    Ok(Template::render("js/app", &ctx))
 }
 
 #[launch]
@@ -219,8 +165,8 @@ fn rocket() -> _ {
         .configure(
             rocket::Config::figment()
                 .merge(("port", 9797))
-                .merge(("address", "0.0.0.0"))
+                .merge(("address", "0.0.0.0")),
         )
-        .mount("/", routes![index, stylecss, indexjs])
+        .mount("/", routes![index, stylecss, appjs])
         .attach(Template::fairing())
 }
