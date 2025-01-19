@@ -11,6 +11,7 @@ use std::fs;
 #[derive(Debug, Deserialize, Serialize)]
 struct Config {
     sdk_version: String,
+    sdk_host: String,
     secret_key: String,
     environment: String,
     #[serde(default = "empty_string")]
@@ -105,12 +106,12 @@ fn index() -> Result<content::RawHtml<String>, Status> {
 <label for="output" id="output-label">OUTPUT:</label>
 <pre id="output"></pre>
 
-<script src="https://web-sdk.seamlesspay.com/{}/js/client.min.js"></script>
-<script src="https://web-sdk.seamlesspay.com/{}/js/digital-wallets.min.js"></script>
+<script src="{}/{}/js/client.min.js"></script>
+<script src="{}/{}/js/digital-wallets.min.js"></script>
 <script src="index.js"></script>
 </body>
 
-</html>"#, config.sdk_version, config.sdk_version
+</html>"#, config.sdk_host, config.sdk_version, config.sdk_host, config.sdk_version
     );
 
     Ok(rocket::response::content::RawHtml(formatted))
