@@ -21,7 +21,7 @@ seamlesspay.client.create(
     seamlesspay.digitalWallets.create(
       {
         client: client,
-        supportedWalletTypes: ['apple_pay'],
+        supportedWalletTypes: ['apple_pay', 'google_pay'],
         paymentData: {
           totalAmount: 10500, // in currency subunits
         },
