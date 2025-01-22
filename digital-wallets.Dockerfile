@@ -33,5 +33,6 @@ WORKDIR /dw
 
 COPY --from=dw-build /digital-wallets/target/x86_64-unknown-linux-musl/release/digital-wallets ./digital-wallets
 COPY examples/digital-wallets/templates ./templates
+COPY examples/digital-wallets/dw-config.toml ./dw-config.toml
 
 CMD ["./digital-wallets"]

@@ -30,7 +30,7 @@ seamlesspay.client.create(
         client: client,
         supportedWalletTypes: ['apple_pay'],
         paymentData: {
-          totalAmount: 10500, // in currency subunits
+          totalAmount: 142, // in currency subunits
         },
         paymentButtonContainer: { selector: '#payment-button-container' },
       },
@@ -63,5 +63,5 @@ function paymentResponseHandler(error, paymentResponse) {
   }
 
   debug('paymentResponse:', paymentResponse);
-  displayOutput('Payment Response:', paymentResponse);
+  displayOutput('Payment Response:', JSON.stringify(paymentResponse, 0, 2));
 }

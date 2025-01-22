@@ -51,11 +51,16 @@ Set tunnel `Service` fields to:
 
 - Export or explicitly provide cloudflare tunnel access token in `TUNNEL_TOKEN` environment variable
 - Export or explicitly provide tunnel's public hostname in `PUBLIC_HOST` environment variable
+- Copy `examples/digital-wallets/dw/dw-config.toml.example` to `examples/digital-wallets/dw/dw-config.toml` and edit as needed
 
 ##### Spinning things up
 
 ```sh
-docker compose up
+docker compose up --watch
 ```
 
 The examples are then available both locally and via tunnel's external hostname.
+
+##### Modifying templates and configuration
+
+With compose watch on, modifications to configuration file and templates will get syncronised with the container, restarting the app to pick up the changes.

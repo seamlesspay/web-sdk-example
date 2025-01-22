@@ -28,8 +28,18 @@ services:
       dockerfile: digital-wallets.Dockerfile
     pull_policy: build
     restart: unless-stopped
-    volumes:
-      - ./examples/digital-wallets/dw-config.toml:/dw/dw-config.toml:ro
+    develop:
+      watch:
+        - action: rebuild
+          path: ./examples/digital-wallets/Cargo.toml
+        - action: rebuild
+          path: ./examples/digital-wallets/src
+        - action: sync+restart
+          path: ./examples/digital-wallets/dw-config.toml
+          target: /dw/dw-config.toml
+        - action: sync+restart
+          path: ./examples/digital-wallets/templates
+          target: /dw/templates
 
 volumes:
   caddy_data:
