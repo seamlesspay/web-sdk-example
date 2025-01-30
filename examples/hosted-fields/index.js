@@ -22,7 +22,8 @@ seamlesspay.client.create({
     client: client,
     styles: {
       input: {
-        'font-size': '16pt'
+        padding: '10px',
+        'font-size': '14pt',
       },
       '.valid': {
         color: 'green'
@@ -38,8 +39,9 @@ seamlesspay.client.create({
       accountNumber: { selector: '#account-number' },
       cvv: {selector: '#cvv' },
       expDate: { selector: '#exp-date' },
+      postalCode: { selector: '#postal-code' },
     },
-    submitButton: { selector: '#submit-button' }
+    submitButton: { selector: '#tokenize-button' }
   }, (error, hostedFields) => {
     if (error) {
       debug('[hostedFields.create]', error)

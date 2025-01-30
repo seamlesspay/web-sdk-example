@@ -1,0 +1,15 @@
+[package]
+name = "digital-wallets"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+indoc = "2"
+rocket = "0.5.1"
+serde = "1.0.216"
+toml = "0.8.19"
+ureq = { version = "2.12.1", features = ["json"] }
+
+[dependencies.rocket_dyn_templates]
+version = "0.2.0"
+features = ["handlebars"]
