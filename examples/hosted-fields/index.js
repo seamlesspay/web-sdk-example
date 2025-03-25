@@ -51,8 +51,8 @@ seamlesspay.client.create({
     debug('hostedFields:', hostedFields)
     displayOutput(`Hosted Fields initialized.`)
 
-    hostedFields.addSubmitHandler(submitHandler);
-    hostedFields.addResponseHandler(responseHandler);
+    hostedFields.addTokenizeRequestHandler(submitHandler);
+    hostedFields.addTokenizeResponseHandler(responseHandler);
   })
 })
 
